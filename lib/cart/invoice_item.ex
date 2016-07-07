@@ -28,11 +28,11 @@ defmodule Cart.InvoiceItem do
   end
 
   def set_subtotal(cs) do
-    case {(cs.changes[:price] || cs.data.price), (cs.changes[:quantity] || cs.data.quantity)} do
-      {_price, nil} -> cs
-      {nil, _quantity} -> cs
-      {price, quantity} ->
-        put_change(cs, :subtotal, Decimal.mult(price, quantity))
+    {price, quantity} = {(cs.changes[:price] || cs.data.price), (cs.changes[:quantity] || cs.data.quantity)}
+    if cs.valid? do
+      put_change(cs, :subtotal, Decimal.mult(price, quantity))
+    else
+      cs
     end
   end
 

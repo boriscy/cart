@@ -35,4 +35,12 @@ defmodule Cart.Item do
     order_by: [desc: sum(field(ii, ^type))]
   end
 
+  def items(type \\ :subtotal) do
+    Item
+    |> join(:inner, [i], ii in InvoiceItem, ii.item_id == i.id)
+    |> select([i, ii], %{id: i.id, name: i.name, total: sum(field(ii, ^type))})
+    |> group_by([i, _], i.id)
+    |> order_by([_, ii], [desc: sum(field(ii, ^type))])
+  end
+
 end
